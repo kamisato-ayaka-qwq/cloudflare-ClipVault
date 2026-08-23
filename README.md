@@ -1,6 +1,32 @@
 # CloudPaste - Online Clipboard Text & File Sharing Platform
 # Cloudflare Worker Text & File Sharing Platform
+
+<div align="center">
+<a href="https://github.com/kamisato-ayaka-qwq/cloudflare-ClipVault/edit/main/README_CN.md">
+  <kbd>🇨🇳 切换中文</kbd>
+</a>
+</div>
+
 > A lightweight self‑hosted sharing service built on Cloudflare Worker + KV + R2. Supports text (Markdown / LaTeX formula) and file sharing, password protection, expiration time, access‑count limits, and an admin dashboard. Runs entirely on Cloudflare edge network with no origin server required.
+
+## Table of Contents
+- [✨ Features](#-features)
+  - [📝 Text Sharing](#-text-sharing)
+  - [📁 File Sharing](#-file-sharing)
+  - [🔐 Admin Dashboard](#-admin-dashboard)
+  - [🛠 Additional Capabilities](#-additional-capabilities)
+- [🧱 Deployment Dependencies](#-deployment-dependencies)
+- [📦 Environment Variables (Worker Variables)](#-environment-variables-worker-variables)
+  - [Bindings (Names must match exactly)](#bindings-names-must-match-exactly)
+- [🚀 Deployment Steps](#-deployment-steps)
+- [📝 Usage Instructions](#-usage-instructions)
+  - [Regular Users](#regular-users)
+  - [Administrator Operations](#administrator-operations)
+- [⚠️ Important Limitations](#️-important-limitations)
+- [🔗 API Reference](#-api-reference)
+- [📄 Simple Clipboard API](#-simple-clipboard-api)
+- [🛡️ Security Notes](#️-security-notes)
+- [📃 License](#-license)
 
 ## ✨ Features
 ### 📝 Text Sharing
