@@ -1,154 +1,154 @@
-# CloudPaste - Online Clipboard Text & File Sharing Platform
-# Cloudflare Worker Text & File Sharing Platform
+# CloudPaste - 在线剪贴板 文本&amp;文件分享平台
+## Cloudflare Worker 轻量自建分享服务
 
 <div align="center">
-<a href="https://github.com/kamisato-ayaka-qwq/cloudflare-ClipVault/edit/main/README_CN.md">
-  <kbd>🇨🇳 切换中文</kbd>
+<a href="https://github.com/kamisato-ayaka-qwq/cloudflare-ClipVault/edit/main/README_EN.md">
+  <kbd>🇺🇸 Switch to English</kbd>
 </a>
 </div>
 
-> A lightweight self‑hosted sharing service built on Cloudflare Worker + KV + R2. Supports text (Markdown / LaTeX formula) and file sharing, password protection, expiration time, access‑count limits, and an admin dashboard. Runs entirely on Cloudflare edge network with no origin server required.
+> 基于 Cloudflare Worker + KV + R2 搭建的无服务器轻量分享平台，支持 Markdown/LaTeX 文本、文件上传分享，内置密码保护、时效过期、访问次数限制、独立管理后台。全程部署在 Cloudflare 边缘网络，无需服务器、无需 VPS。
 
-## Table of Contents
-- [✨ Features](#-features)
-  - [📝 Text Sharing](#-text-sharing)
-  - [📁 File Sharing](#-file-sharing)
-  - [🔐 Admin Dashboard](#-admin-dashboard)
-  - [🛠 Additional Capabilities](#-additional-capabilities)
-- [🧱 Deployment Dependencies](#-deployment-dependencies)
-- [📦 Environment Variables (Worker Variables)](#-environment-variables-worker-variables)
-  - [Bindings (Names must match exactly)](#bindings-names-must-match-exactly)
-- [🚀 Deployment Steps](#-deployment-steps)
-- [📝 Usage Instructions](#-usage-instructions)
-  - [Regular Users](#regular-users)
-  - [Administrator Operations](#administrator-operations)
-- [⚠️ Important Limitations](#️-important-limitations)
-- [🔗 API Reference](#-api-reference)
-- [📄 Simple Clipboard API](#-simple-clipboard-api)
-- [🛡️ Security Notes](#️-security-notes)
-- [📃 License](#-license)
+## 📋 目录导航
+- [✨ 核心功能](#-核心功能)
+  - [📝 文本分享](#-文本分享)
+  - [📁 文件分享](#-文件分享)
+  - [🔐 管理后台](#-管理后台)
+  - [🛠 其他能力](#-其他能力)
+- [🧱 部署依赖](#-部署依赖)
+- [📦 环境变量配置](#-环境变量配置)
+  - [绑定配置（必填）](#绑定配置必填)
+- [🚀 快速部署教程](#-快速部署教程)
+- [📝 使用说明](#-使用说明)
+  - [普通用户使用](#普通用户使用)
+  - [管理员操作](#管理员操作)
+- [⚠️ 重要限制说明](#️-重要限制说明)
+- [🔗 API 接口文档](#-api-接口文档)
+- [📄 简易剪贴板接口](#-简易剪贴板接口)
+- [🛡️ 安全须知](#️-安全须知)
+- [📃 开源协议](#-开源协议)
 
-## ✨ Features
-### 📝 Text Sharing
-- Real‑time Markdown preview with GFM syntax support
-- Code syntax highlighting (highlight.js)
-- LaTeX math formula rendering (KaTeX)
-- Password‑protected shares
-- Configurable expiration time and maximum access count
-- Custom share ID suffix
-- Edit text content from admin dashboard
+## ✨ 核心功能
+### 📝 文本分享
+- 支持 GFM 标准 Markdown 语法，实时预览渲染
+- 内置 highlight.js 实现代码高亮显示
+- 集成 KaTeX 引擎，支持 LaTeX 数学公式渲染
+- 分享链接密码保护，防止公开访问
+- 可自定义文本过期时间、最大访问次数
+- 支持自定义分享后缀 ID，打造专属链接
+- 管理后台可随时编辑、修改已发布的文本内容
 
-### 📁 File Sharing
-- Drag‑and‑drop upload, multi‑file simultaneous upload
-- Max single file size **98 MB** (Worker hard limit)
-- In‑browser preview for images / PDF / audio / video
-- Password protection and expiration time
-- Maximum access count & maximum download count limits
-- Custom share ID
-- File binaries stored in R2 object storage; metadata stored in KV
+### 📁 文件分享
+- 支持拖拽上传、多文件批量同时上传
+- 单文件最大支持 **98MB**（Cloudflare Worker 硬性限制）
+- 支持图片、PDF、音频、视频等文件在线预览
+- 支持密码保护、时效过期、访问/下载次数限制
+- 自定义文件分享 ID，灵活管理链接
+- 文件二进制数据存储于 R2 对象存储，元数据存储于 KV 数据库
 
-### 🔐 Admin Dashboard
-- Admin password login, 7‑day session validity
-- Toggle text / file upload functionality
-- View full share list and storage statistics
-- Modify share password, access / download limits
-- Rename share link (change share ID)
-- Delete shares (associated R2 files are removed as well)
-- Update admin password
+### 🔐 管理后台
+- 独立管理员密码登录，会话有效期7天
+- 一键开启/关闭文本、文件上传功能
+- 可视化查看全部分享记录、存储用量统计
+- 支持修改分享密码、访问次数、下载次数限制
+- 支持重命名分享ID，自定义分享链接
+- 一键删除分享记录，同步清理 R2 存储文件
+- 支持随时修改管理员登录密码
 
-### 🛠 Additional Capabilities
-- PWA support, Service Worker for static CDN resource caching
-- Dark / light theme switch
-- Auto expiration cleanup (recycle expired or access‑limit‑reached shares)
-- Simple clipboard API (`/save` `/read` `/clear`)
-- Path prefix TOKEN for sub‑path deployment
-- Global error catching, JSON‑formatted errors for debugging
+### 🛠 其他能力
+- 支持 PWA 渐进式网页应用，静态资源缓存加速访问
+- 内置深色/浅色双主题，一键切换
+- 自动过期清理机制，回收过期、达到访问上限的分享内容
+- 内置简易剪贴板接口，支持快速存取文本内容
+- 支持路径前缀 TOKEN 配置，实现子路径部署
+- 全局错误捕获，标准化 JSON 错误输出，方便调试
 
-## 🧱 Deployment Dependencies
-> All resources are Cloudflare serverless, **no VPS required**
-1. **Cloudflare Worker**: Executes JavaScript logic
-2. **KV Namespace**: Stores share metadata, configurations, admin sessions and statistics
-3. **R2 Bucket**: Stores uploaded file binary data
+## 🧱 部署依赖
+> 全程使用 Cloudflare 无服务资源，**无需 VPS、无需服务器**，零运维部署
 
-## 📦 Environment Variables (Worker Variables)
-| Variable Name | Description | Required |
+1. **Cloudflare Worker**：运行项目核心 JS 逻辑，提供接口与页面服务
+2. **KV Namespace**：存储分享元数据、系统配置、管理员会话、统计数据
+3. **R2 Bucket**：存储用户上传的所有文件二进制数据
+
+## 📦 环境变量配置
+| 变量名 | 说明 | 是否必填 |
 |---|---|---|
-| `ADMIN_PASSWORD` | Plain‑text admin password. Hashed and saved into KV on first run. This variable can be removed afterwards. | ✅ |
-| `TOKEN` | Optional path prefix. Example: `abc123` → access URL becomes `your‑domain/abc123/` | ❌ |
-| `EXPIRE` | Default text expiration in seconds. `0` = permanent. Default value: `300` (5 minutes). | ❌ |
+| `ADMIN_PASSWORD` | 管理员明文密码，首次运行自动哈希加密存入KV，配置完成后可删除该变量，避免明文泄露 | ✅ 必填 |
+| `TOKEN` | 可选路径前缀，例如填写 `abc123`，访问地址变为 `域名/abc123/` | ❌ 选填 |
+| `EXPIRE` | 文本默认过期秒数，0代表永久有效，默认值 `300`（5分钟） | ❌ 选填 |
 
-### Bindings (Names must match exactly)
-| Type | Variable Name | Description |
+### 绑定配置（必填）
+> ⚠️ **绑定变量名必须严格大写 KV、R2**，代码已写死，不支持自定义修改
+
+| 资源类型 | 绑定变量名 | 用途说明 |
 |---|---|---|
-| KV Namespace | `KV` | KV storage binding |
-| R2 Bucket | `R2` | R2 object‑storage bucket binding |
+| KV Namespace | `KV` | KV数据库存储绑定 |
+| R2 Bucket | `R2` | R2对象存储桶绑定 |
 
-> ⚠️ Notice: Binding variable names **must be uppercase `KV` and `R2`**. Hard‑coded in source code and cannot be customized.
+## 🚀 快速部署教程
+1. 登录 Cloudflare 控制台 → 进入 **Workers &amp; Pages** → 新建 Worker
+2. 将项目完整 JS 代码粘贴至 Worker 代码编辑器，保存并部署
+3. 新建 KV Namespace，在 Worker 设置-绑定项中绑定，变量名填写 `KV`
+4. 新建 R2 存储桶，在 Worker 设置-R2对象存储中绑定，变量名填写 `R2`
+5. 添加环境变量 `ADMIN_PASSWORD`，填写自定义管理员密码
+6. （可选）配置 `TOKEN` 路径前缀、`EXPIRE` 默认过期时间
+7. 访问你的 Worker 域名，即可打开项目主页
+8. 首次访问后，管理员密码会自动哈希加密存入KV，可删除环境变量中的明文密码，杜绝泄露风险
 
-## 🚀 Deployment Steps
-1. Go to Cloudflare Console → Workers & Pages → Create Worker
-2. Paste the full JavaScript source code into the Worker editor and deploy
-3. Create a KV Namespace. In Worker Settings → Bindings bind KV with variable name: `KV`
-4. Create an R2 Bucket. In Worker Settings → R2 Object Storage bind bucket with variable name: `R2`
-5. Set environment variable `ADMIN_PASSWORD` with your desired admin password
-6. (Optional) Configure `TOKEN` and `EXPIRE` environment variables
-7. Visit your Worker domain to open the main web page
-8. After first visit, `ADMIN_PASSWORD` will be hashed and persisted inside KV. You may delete the plain‑text environment variable to avoid credential leakage.
+> 管理员后台地址：`https://你的worker域名/admin`
 
-> Admin panel URL: `https://your‑worker‑domain/admin`
+## 📝 使用说明
+### 普通用户使用
+1. **文本分享**：输入 Markdown 内容，实时预览效果，可自定义密码、过期时间、访问上限、专属分享ID，一键生成分享链接。
+2. **文件分享**：拖拽或手动选择本地文件，配置密码、时效、下载次数限制，上传后生成公开分享链接。
+3. **访问分享**：通过分享ID即可访问对应内容，受密码、过期时间、访问次数规则严格限制。
 
-## 📝 Usage Instructions
-### Regular Users
-1. **Text Share**: Write Markdown content with live preview. Configure password, expiration time, access limit and custom share ID, then generate share link.
-2. **File Share**: Drag‑and‑drop or select local files, set parameters and upload to generate share link.
-3. Access shares via share ID, subject to password, expiration and access‑count restrictions.
+### 管理员操作
+1. 访问 `/admin` 路径，输入管理员密码登录后台
+2. 查看存储统计数据，自由开启/关闭文本、文件上传功能
+3. 管理全站所有分享记录，支持修改密码、次数限制、重命名、删除分享
+4. 随时更新管理员登录密码，保障后台安全
 
-### Administrator Operations
-1. Navigate to `/admin` and log in with admin password
-2. View storage statistics; enable or disable text / file upload features
-3. Browse all shares; modify password, count limits, rename share ID or delete shares
-4. Change administrator login password
+## ⚠️ 重要限制说明
+1. Cloudflare Worker 请求体硬限制 **100MB**，项目单文件安全上限为 **98MB**，无法突破官方限制。
+2. R2 免费额度：每月10GB存储、100万次读取请求，超额会产生费用，建议个人自用并实时监控用量。
+3. KV 免费版读写次数有限，仅适用于个人、小圈子使用，不支持高并发公开服务。
+4. 自动清理为**请求触发式机制**，非定时任务，仅当服务被访问时执行，每小时最多清理一次。
+5. 禁止公开大规模引流使用，本项目定位个人学习、自用、小众分享场景。
 
-## ⚠️ Important Limitations
-1. Worker request payload hard limit: **100 MB**, practical single‑file limit **98 MB**. Cannot be bypassed.
-2. R2 free tier quota: 10 GB storage per month, 1 million read requests. Costs may be incurred once quota is exceeded. Monitor your usage.
-3. KV free tier has limited read‑write capacity. Suitable for personal use; not for high‑traffic public services.
-4. Auto cleanup is **request‑triggered**, not real cron job. Cleanup runs only when Worker receives requests, at most once per hour.
-5. Do not expose this service to large public audiences. This project targets personal and small‑group scenarios.
+## 🔗 API 接口文档
+> 基础接口路径：`[自定义TOKEN前缀]/api`
 
-## 🔗 API Reference
-> Base path: `[TOKEN‑prefix]/api`
-
-| Endpoint | Method | Description |
+| 接口地址 | 请求方法 | 接口说明 |
 |---|---|---|
-| `/api/admin/login` | POST | Admin login, obtain session token |
-| `/api/admin/logout` | POST | Admin logout |
-| `/api/admin/config` | GET / PUT | Get / update system configuration |
-| `/api/admin/stats` | GET | Retrieve storage statistics |
-| `/api/admin/shares` | GET | List all shares |
-| `/api/share/text` | POST | Create text share |
-| `/api/share/file` | POST | Create metadata record for file share |
-| `/api/upload/{shareId}/{index}` | PUT | Upload individual file binary to R2 |
-| `/api/share/{id}` | GET | Get share metadata (password validation applied) |
-| `/api/share/{id}/verify` | POST | Verify share access password |
-| `/api/share/{id}/file/{index}` | GET | File download / preview |
-| `/api/share/{id}/delete` | POST | Delete share (admin only) |
-| `/api/share/{id}/password` | PUT | Update share password (admin only) |
-| `/api/share/{id}/limits` | PUT | Modify access / download count limits (admin only) |
-| `/api/share/{id}/rename` | PUT | Rename share ID (admin only) |
-| `/api/share/{id}/edit` | PUT | Edit text‑share content (admin only) |
+| `/api/admin/login` | POST | 管理员登录，获取会话令牌 |
+| `/api/admin/logout` | POST | 管理员登出，销毁会话 |
+| `/api/admin/config` | GET/PUT | 获取/修改系统全局配置 |
+| `/api/admin/stats` | GET | 获取存储用量、访问统计数据 |
+| `/api/admin/shares` | GET | 获取全站所有分享列表 |
+| `/api/share/text` | POST | 创建文本分享 |
+| `/api/share/file` | POST | 创建文件分享元数据 |
+| `/api/upload/{shareId}/{index}` | PUT | 上传文件至R2对象存储 |
+| `/api/share/{id}` | GET | 获取分享元数据（含密码校验） |
+| `/api/share/{id}/verify` | POST | 校验分享访问密码 |
+| `/api/share/{id}/file/{index}` | GET | 文件下载/在线预览 |
+| `/api/share/{id}/delete` | POST | 删除分享（仅管理员） |
+| `/api/share/{id}/password` | PUT | 修改分享密码（仅管理员） |
+| `/api/share/{id}/limits` | PUT | 修改访问/下载次数限制（仅管理员） |
+| `/api/share/{id}/rename` | PUT | 重命名分享ID（仅管理员） |
+| `/api/share/{id}/edit` | PUT | 编辑文本分享内容（仅管理员） |
 
-## 📄 Simple Clipboard API
-- `POST /save`: Save text content to KV clipboard
-- `GET /read`: Read clipboard content
-- `GET /clear`: Clear clipboard content
+## 📄 简易剪贴板接口
+- `POST /save`：提交文本内容，保存至云端剪贴板
+- `GET /read`：读取云端剪贴板存储的文本
+- `GET /clear`：清空云端剪贴板内容
 
-## 🛡️ Security Notes
-1. **Always set a strong admin password**. Avoid weak passwords.
-2. Remove plain‑text `ADMIN_PASSWORD` environment variable after first deployment. Credential is stored as hash inside KV.
-3. Do not open service to anonymous mass users to prevent unexpected R2 / KV billing charges.
-4. Share passwords are application‑layer protection only. Files are stored unencrypted in R2. Encrypt sensitive files locally before uploading.
-5. This project is for personal learning purposes. Direct production‑grade commercial usage is not recommended.
+## 🛡️ 安全须知
+1. **务必设置高强度管理员密码**，禁止使用弱密码，防止后台被入侵。
+2. 首次部署密码哈希保存后，及时删除环境变量中的明文密码，避免信息泄露。
+3. 请勿对公网大规模开放服务，防止 R2、KV 超额产生高额账单。
+4. 分享密码仅为应用层简易加密，文件在 R2 中为明文存储，敏感文件建议本地加密后再上传。
+5. 本项目仅用于个人学习、自用，不建议直接用于商业生产环境。
 
-## 📃 License
-> MIT License, for personal study only.
+## 📃 开源协议
+MIT 开源协议，仅供个人学习、研究使用。
